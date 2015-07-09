@@ -23,7 +23,7 @@ protected:
 	struct Page
 	{
 		int count;
-		Type *keys;
+		Type* keys;
 		bool isLeaf;
 		Page* *children;
 
@@ -47,13 +47,13 @@ protected:
 
 	};
 
-	Page *mRoot;
+	Page* mRoot;
 
-	bool lookupRec(Page *localRoot, Type const &key) const;
+	bool lookupRec(Page* localRoot, Type const &key) const;
 	void insertFirst(Type const &key);
-	void insertNonFull(Page *host, Type const &key);
-	void splitChild(Page *host, int const &index);
-	void deleteSubDetour(Page *current);
+	void insertNonFull(Page* host, Type const &key);
+	void splitChild(Page* host, int const &index);
+	void deleteSubDetour(Page* current);
 };
 
 }

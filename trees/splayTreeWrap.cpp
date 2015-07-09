@@ -2,10 +2,6 @@
 
 using namespace Tree;
 
-SplayTreeWrap::SplayTreeWrap()
-{
-}
-
 void SplayTreeWrap::insert(Type const &key)
 {
 	mTree.insert(key, true);

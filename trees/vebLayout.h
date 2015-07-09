@@ -10,7 +10,9 @@ namespace Tree
 class VebLayoutTree : public ITree
 {
 public:
-	VebLayoutTree();
+	VebLayoutTree() = default;
+    //! @arg hintSize forward declaration of input data amount; May speedup building
+	VebLayoutTree(size_t hintSize);
 	~VebLayoutTree();
 
 	void insert(Type const &key);
@@ -23,7 +25,7 @@ public:
 
 protected:
 	std::vector<Type> mData;
-	VanEmdeBoas<Type> *mVebber;
-	int mSize;
+	VanEmdeBoas<Type>* mVebber = nullptr;
+	int mSize = 0;
 };
 }

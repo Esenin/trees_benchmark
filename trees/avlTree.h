@@ -27,12 +27,12 @@ protected:
 	Node *mRoot;
 	int mSize;
 
-	void setRoot(Node *node);
-	int height();
+	void setRoot(Node* node);
+	int height() const;
 	Node* findNode(Type key) const;
-	void rotateLeft(Node *n);
-	void rotateRight(Node * n);
-	void balanceAtNode(Node *n);
+	void rotateLeft(Node* n);
+	void rotateRight(Node* n);
+	void balanceAtNode(Node* n);
 };
 
 }

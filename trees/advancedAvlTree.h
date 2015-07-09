@@ -1,19 +1,31 @@
 #pragma once
 
 #include <vector>
-#include <algorithm>
+
 
 #include "iTree.h"
 
 namespace Tree
 {
-//! @class VEBLayoutBinTree is a modification of AVL-like binary tree
+//! @class AdvancedAvlTree is a modification of AVL-like binary tree
 //! implementation idea: each node has also children of host-key
 //! that must decrease number of cachemisses
+//!                         Page0
+//!                 |-----------------------|
+//!                 |         Key           |
+//!                 |       /    \          |
+//!                 |    lKey   rKey        |
+//!                 |_______________________|
+//!                   /     \      /     \
+//!   sub-pages:    page1  page2  page3  page4
+//!
+//!
 class AdvancedAvlTree : public ITree
 {
 public:
-	AdvancedAvlTree();
+    AdvancedAvlTree() = default;
+    //! @arg forward declaration of input data size. May speedup building because of it is static-tree
+    explicit AdvancedAvlTree(size_t hintSize);
 	~AdvancedAvlTree();
 
 	void insert(Type const &key);
@@ -35,39 +47,36 @@ protected:
 	struct Page
 	{
 		Type key;
-		bool hasLeftChild;
+		char hasLRChildren = 0;
 		Type leftKey;
-		bool hasRightChild;
 		Type rightKey;
-		Page* children[4];
+		Page* children[4] {};
 
-		Page()
-			: hasLeftChild(false)
-			, hasRightChild(false)
-		{
-			for (int i = 0; i < 4; i++)
-			{
-				children[i] = nullptr;
-			}
+        ~Page()
+        {
+            for (Page* &child : children)
+                delete child;
 		}
 
-		~Page()
-		{
-			for (int i = 0; i < 4; i++)
-			{
-				if (this->children[i] != nullptr)
-				{
-					delete this->children[i];
-				}
-			}
-		}
+        inline bool hasLeftChild() const  { return (hasLRChildren & 2) != 0; } // 00L0
+		inline void setLeftKey(Type const &val)
+        {
+            leftKey = val;
+            hasLRChildren |= 2;
+        }
+        inline bool hasRightChild() const { return (hasLRChildren & 1) != 0; } // 000R
+		inline void setRightKey(Type const &val)
+        {
+            rightKey = val;
+            hasLRChildren |= 1;
+        }
 	};
 
-	Page *mRoot;
+	Page* mRoot = nullptr ;
 	std::vector<Type> mData;
 
 	void makeSubTree(Page* &locRoot, int const leftBound, int const rightBound);
-	bool findIn(Page *subTree, Type const &key) const;
+	bool findIn(Page* subTree, Type const &key) const;
 };
 }
 

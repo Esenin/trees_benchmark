@@ -1,11 +1,15 @@
 #include "advancedAvlTree.h"
 
+#include <algorithm>
+#include <thread>
+
 using namespace Tree;
 
-Tree::AdvancedAvlTree::AdvancedAvlTree()
-	: mRoot(nullptr)
+AdvancedAvlTree::AdvancedAvlTree(size_t hintSize)
 {
+    mData.reserve(hintSize + 1);
 }
+
 
 AdvancedAvlTree::~AdvancedAvlTree()
 {
@@ -44,6 +48,7 @@ bool AdvancedAvlTree::isBuildable() const
 
 void AdvancedAvlTree::makeSubTree(AdvancedAvlTree::Page* &locRoot, int const leftBound, int const rightBound)
 {
+    std::unique_ptr<std::thread> thread;
 	locRoot = new Page();
 	if (mRoot == nullptr)
 	{
@@ -53,22 +58,29 @@ void AdvancedAvlTree::makeSubTree(AdvancedAvlTree::Page* &locRoot, int const lef
 	locRoot->key = mData.at(middle);
 
 	// left half
-	if (middle - leftBound > 0)
+	if (middle - leftBound > 0)                     // Try to execute left half in separate thread
 	{
 		int leftPivot = (leftBound + middle) / 2;
-		locRoot->leftKey = mData.at(leftPivot);
-		locRoot->hasLeftChild = true;
+        locRoot->setLeftKey(mData.at(leftPivot));
 
-		if (leftPivot - leftBound > 0)
-		{
-			makeSubTree(locRoot->children[leftLeftChild], leftBound, leftPivot - 1);
-		}
+        auto catchLeftPart = [&] ()
+        {
+            if (leftPivot - leftBound > 0)
+            {
+
+                makeSubTree(locRoot->children[leftLeftChild], leftBound, leftPivot - 1);
+            }
 
 
-		if (middle - leftPivot - 1 > 0)
-		{
-			makeSubTree(locRoot->children[leftRightChild], leftPivot + 1, middle - 1);
-		}
+            if (middle - leftPivot - 1 > 0)
+            {
+                makeSubTree(locRoot->children[leftRightChild], leftPivot + 1, middle - 1);
+            }
+        };
+        if (mRoot == locRoot) // we are at top level, so fire left building part in other thread
+            thread.reset(new std::thread(catchLeftPart));
+        else
+            catchLeftPart();
 	}
 
 	// right
@@ -79,8 +91,7 @@ void AdvancedAvlTree::makeSubTree(AdvancedAvlTree::Page* &locRoot, int const lef
 		{
 			rightPivot++;
 		}
-		locRoot->rightKey = mData.at(rightPivot);
-		locRoot->hasRightChild = true;
+        locRoot->setRightKey(mData.at(rightPivot));
 
 		if (rightBound - rightPivot > 0)
 		{
@@ -93,6 +104,9 @@ void AdvancedAvlTree::makeSubTree(AdvancedAvlTree::Page* &locRoot, int const lef
 			makeSubTree(locRoot->children[rightLeftChild], middle + 1, rightPivot - 1);
 		}
 	}
+
+    if (thread)
+        thread->join();
 }
 
 bool AdvancedAvlTree::findIn(AdvancedAvlTree::Page *subTree, Type const &key) const
@@ -104,7 +118,7 @@ bool AdvancedAvlTree::findIn(AdvancedAvlTree::Page *subTree, Type const &key) co
 
 	if (key < subTree->key)
 	{
-		if (!subTree->hasLeftChild)
+		if (!subTree->hasLeftChild())
 		{
 			return false;
 		}
@@ -118,7 +132,7 @@ bool AdvancedAvlTree::findIn(AdvancedAvlTree::Page *subTree, Type const &key) co
 
 	if (key > subTree->key)
 	{
-		if (!subTree->hasRightChild)
+		if (!subTree->hasRightChild())
 		{
 			return false;
 		}
@@ -132,3 +146,4 @@ bool AdvancedAvlTree::findIn(AdvancedAvlTree::Page *subTree, Type const &key) co
 
 	return true;
 }
+

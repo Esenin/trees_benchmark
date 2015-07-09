@@ -21,7 +21,7 @@ bool BTree::lookup(Type const &key) const
 	return lookupRec(mRoot, key);
 }
 
-bool BTree::lookupRec(BTree::Page *localRoot, Type const &key) const
+bool BTree::lookupRec(BTree::Page* localRoot, Type const &key) const
 {
 	int left = 0;
 	int right = localRoot->count - 1;
@@ -72,10 +72,10 @@ bool BTree::isEmpty() const
 
 void BTree::insertFirst(Type const &key)
 {
-	Page *root = mRoot;
+	Page* root = mRoot;
 	if (root->count == mPageSize - 1)
 	{
-		Page *newNode = new Page(mPageSize);
+		Page* newNode = new Page(mPageSize);
 		mRoot = newNode;
 		newNode->isLeaf = false;
 		newNode->count = 0;
@@ -89,7 +89,7 @@ void BTree::insertFirst(Type const &key)
 	}
 }
 
-void BTree::insertNonFull(BTree::Page *host, Type const &key)
+void BTree::insertNonFull(BTree::Page* host, Type const &key)
 {
 	int i = host->count - 1;
 	if (host->isLeaf)
@@ -120,10 +120,10 @@ void BTree::insertNonFull(BTree::Page *host, Type const &key)
 	insertNonFull(host->children[i], key);
 }
 
-void BTree::splitChild(BTree::Page *host, int const &index)
+void BTree::splitChild(BTree::Page* host, int const &index)
 {
-	Page *z = new Page(mPageSize);
-	Page *y = host->children[index];
+	Page* z = new Page(mPageSize);
+	Page* y = host->children[index];
 	z->isLeaf = y->isLeaf;
 
 	z->count = mPivot - 1;
@@ -152,12 +152,12 @@ void BTree::splitChild(BTree::Page *host, int const &index)
 	host->count++;
 }
 
-void BTree::deleteSubDetour(BTree::Page *current)
+void BTree::deleteSubDetour(BTree::Page* current)
 {
 	if (current->isLeaf)
 		return;
 
-	for (short i = 0; i <= current->count; i++)
+	for (auto i = 0; i <= current->count; i++)
 	{
 		if (current->children[i] == nullptr)
 			return;

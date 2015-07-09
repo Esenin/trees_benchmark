@@ -1,7 +1,5 @@
 #include "avlTree.h"
 
-#include <queue>
-
 using namespace Tree;
 
 struct AVLTree::Node
@@ -22,18 +20,12 @@ struct AVLTree::Node
 	}
 	~Node()
 	{
-		if (leftChild != nullptr)
-		{
-			delete leftChild;
-		}
-		if (rightChild != nullptr)
-		{
-			delete rightChild;
-		}
+		delete leftChild;
+		delete rightChild;
 	}
 
 	int updateHeight();
-	int getBalance();
+	int getBalance() const;
 	Node* setLeftChild(Node* newLeft);
 	Node* setRightChild(Node* newRight);
 };
@@ -60,7 +52,7 @@ void AVLTree::insert(Type const &key)
 		return;
 	}
 
-	Node* added_node;
+	Node* newNode;
 	Node* temp = mRoot;
 
 	while(true)
@@ -69,7 +61,7 @@ void AVLTree::insert(Type const &key)
 		{
 			if (temp->leftChild == nullptr)
 			{
-				added_node = temp->setLeftChild(new Node(key));
+				newNode = temp->setLeftChild(new Node(key));
 				++mSize;
 				break;
 			}
@@ -83,7 +75,7 @@ void AVLTree::insert(Type const &key)
 		{
 			if (temp->rightChild == nullptr)
 			{
-				added_node = temp->setRightChild(new Node(key));
+				newNode = temp->setRightChild(new Node(key));
 				++mSize;
 				break;
 			}
@@ -99,7 +91,7 @@ void AVLTree::insert(Type const &key)
 		}
 	}
 
-	temp = added_node;
+	temp = newNode;
 	while(temp != nullptr)
 	{
 		temp->updateHeight();
@@ -134,7 +126,7 @@ void AVLTree::setRoot(AVLTree::Node *node)
 	}
 }
 
-AVLTree::Node *AVLTree::findNode(Type key) const
+AVLTree::Node* AVLTree::findNode(Type key) const
 {
 	Node* temp = mRoot;
 	while(temp != nullptr)
@@ -155,7 +147,7 @@ AVLTree::Node *AVLTree::findNode(Type key) const
 	return nullptr;
 }
 
-void AVLTree::rotateLeft(AVLTree::Node *n)
+void AVLTree::rotateLeft(AVLTree::Node* n)
 {
 	Node *parent = n->parent;
 	Node *temp = n->rightChild;
@@ -179,7 +171,7 @@ void AVLTree::rotateLeft(AVLTree::Node *n)
 	}
 }
 
-void AVLTree::rotateRight(AVLTree::Node *n)
+void AVLTree::rotateRight(AVLTree::Node* n)
 {
 	Node *parent = n->parent;
 	Node * temp = n->leftChild;
@@ -203,7 +195,7 @@ void AVLTree::rotateRight(AVLTree::Node *n)
 	}
 }
 
-void AVLTree::balanceAtNode(AVLTree::Node *n)
+void AVLTree::balanceAtNode(AVLTree::Node* n)
 {
 	int balance = n->getBalance();
 	if (balance > 1)
@@ -224,7 +216,7 @@ void AVLTree::balanceAtNode(AVLTree::Node *n)
 	}
 }
 
-int AVLTree::height()
+int AVLTree::height() const
 {
 	return mRoot->height;
 }
@@ -257,9 +249,9 @@ int AVLTree::Node::updateHeight()
 	return height;
 }
 
-int AVLTree::Node::getBalance()
+int AVLTree::Node::getBalance() const
 {
-	Node *n = this;
+	const Node *n = this;
 	if (n->leftChild != nullptr && n->rightChild != nullptr)
 	{
 		return n->leftChild->height - n->rightChild->height;

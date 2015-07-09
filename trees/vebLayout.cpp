@@ -2,10 +2,9 @@
 
 using namespace Tree;
 
-VebLayoutTree::VebLayoutTree()
-	: mVebber(nullptr)
-	, mSize(0)
+VebLayoutTree::VebLayoutTree(size_t hintSize)
 {
+    mData.reserve(hintSize + 1);
 }
 
 
@@ -43,10 +42,9 @@ bool VebLayoutTree::isBuildable() const
 
 void VebLayoutTree::buildTree()
 {
+	delete mVebber;
+    mVebber = nullptr;
 	std::sort(mData.begin(), mData.end());
-	if (mVebber != nullptr)
-	{
-		delete mVebber;
-	}
 	mVebber = new VanEmdeBoas<Type>(&mData);
 }
+

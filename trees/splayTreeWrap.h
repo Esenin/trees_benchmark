@@ -8,7 +8,7 @@ namespace Tree
 class SplayTreeWrap : public ITree
 {
 public:
-	SplayTreeWrap();
+	SplayTreeWrap() = default;
 
 	void insert(Type const &key);
 	bool lookup(Type const &key) const;

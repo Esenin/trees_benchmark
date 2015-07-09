@@ -18,21 +18,19 @@ set(SOURCE_FILES
     trees/splayTreeWrap.h
     trees/stlMap.cpp
     trees/stlMap.h
-    trees/testTreeAdapter.cpp
-    trees/testTreeAdapter.h
-    trees/treeTestLauncher.h
+    benchmarking/testTreeAdapter.cpp
+    benchmarking/testTreeAdapter.h
+    benchmarking/treeTestLauncher.h
     trees/vebLayout.cpp
     trees/vebLayout.h
-    trees/normalDistGenerator.h
+    benchmarking/normalDistGenerator.h
     trees/main.cpp
+    benchmarking/main.cpp
     README.md)
 
-find_package(Threads)
+find_package(Threads REQUIRED)
 
-add_subdirectory(AnyBenchmark/TestingFramework)
-#add_subdirectory(benchmark)
-
-include_directories(${AnyBenchmark_SOURCE_DIR}/include ${AnyBenchmark_SOURCE_DIR})
+add_subdirectory(AnyBenchmark)
 
 add_executable(trees_benchmark ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} AnyBenchmark ${CMAKE_THREAD_LIBS_INIT})
