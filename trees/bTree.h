@@ -1,26 +1,36 @@
 #pragma once
 
 #include "iTree.h"
+#include <functional>
+#include <map>
 
 namespace tree
 {
-template<size_t Page_Size = 40>
+typedef unsigned short ushrt_t;
+
+ITree* createBTree(ushrt_t pageSize);
+
+template<ushrt_t Page_Size = 64>
 //! @class BTree is a pure implementation of B-Tree without any payload
 class BTree : public ITree
 {
 public:
     explicit BTree() : mRoot(new Page())  {}
+    //! @arg pageSize currently supported only 32, 40, 64, 96, 128, 256, 512, 1024
 
     virtual ~BTree()  { delete mRoot; }
 
     bool lookup(Type const &key) const;
     void insert(Type const &key);
     bool isEmpty() const;
-
 protected:
+    BTree(BTree const &) = delete;
+    BTree& operator= (BTree const&) = delete;
+
+
     static int const binSearchBound = 100;
     //! pageSize shows the number of element per one page-node
-    constexpr static size_t mPivot = Page_Size / 2;
+    constexpr static ushrt_t mPivot = Page_Size / 2;
 
     struct Page
     {
@@ -49,13 +59,13 @@ protected:
 };
 
 
-template<size_t Page_Size>
+template<ushrt_t Page_Size>
 bool BTree<Page_Size>::lookup(Type const &key) const
 {
     return lookupRec(mRoot, key);
 }
 
-template<size_t Page_Size>
+template<ushrt_t Page_Size>
 bool BTree<Page_Size>::lookupRec(BTree::Page* localRoot, Type const &key) const
 {
     int left = 0;
@@ -93,7 +103,7 @@ bool BTree<Page_Size>::lookupRec(BTree::Page* localRoot, Type const &key) const
     return (localRoot->isLeaf) ? false : lookupRec(localRoot->children[localRoot->count], key);
 }
 
-template<size_t Page_Size>
+template<ushrt_t Page_Size>
 void BTree<Page_Size>::insert(Type const &key)
 {
     if (lookup(key))
@@ -101,13 +111,13 @@ void BTree<Page_Size>::insert(Type const &key)
     insertFirst(key);
 }
 
-template<size_t Page_Size>
+template<ushrt_t Page_Size>
 bool BTree<Page_Size>::isEmpty() const
 {
     return mRoot->count == 0;
 }
 
-template<size_t Page_Size>
+template<ushrt_t Page_Size>
 void BTree<Page_Size>::insertFirst(Type const &key)
 {
     Page* root = mRoot;
@@ -127,7 +137,7 @@ void BTree<Page_Size>::insertFirst(Type const &key)
     }
 }
 
-template<size_t Page_Size>
+template<ushrt_t Page_Size>
 void BTree<Page_Size>::insertNonFull(BTree::Page* host, Type const &key)
 {
     int i = host->count - 1;
@@ -159,7 +169,7 @@ void BTree<Page_Size>::insertNonFull(BTree::Page* host, Type const &key)
     insertNonFull(host->children[i], key);
 }
 
-template<size_t Page_Size>
+template<ushrt_t Page_Size>
 void BTree<Page_Size>::splitChild(BTree::Page* host, int const &index)
 {
     Page* z = new Page();
@@ -193,4 +203,22 @@ void BTree<Page_Size>::splitChild(BTree::Page* host, int const &index)
     host->count++;
 }
 
+
+ITree* createBTree(ushrt_t pageSize)
+{
+    static std::map<ushrt_t, std::function<ITree* (void)>> constructors
+            {
+                    std::make_pair(32, []() { return new BTree<32>; }),
+                    std::make_pair(40, []() { return new BTree<40>; }),
+                    std::make_pair(64, []() { return new BTree<64>; }),
+                    std::make_pair(96, []() { return new BTree<96>; }),
+                    std::make_pair(128, []() { return new BTree<128>; }),
+                    std::make_pair(256, []() { return new BTree<256>; }),
+                    std::make_pair(512, []() { return new BTree<512>; }),
+                    std::make_pair(1024, []() { return new BTree<1024>; }),
+
+            };
+    return (constructors.count(pageSize)) ? constructors[pageSize]() : nullptr;
 }
+
+} //namespace tree
