@@ -2,10 +2,9 @@
 
 #include <vector>
 
-
 #include "iTree.h"
 
-namespace Tree
+namespace tree
 {
 //! @class AdvancedAvlTree is a modification of AVL-like binary tree
 //! implementation idea: each node has also children of host-key

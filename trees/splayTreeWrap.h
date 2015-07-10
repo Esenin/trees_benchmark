@@ -3,19 +3,33 @@
 #include "iTree.h"
 #include "splayTree/splayTree.h"
 
-namespace Tree
+namespace tree
 {
+
 class SplayTreeWrap : public ITree
 {
 public:
-	SplayTreeWrap() = default;
+    SplayTreeWrap() : mSplayTree(std::numeric_limits<Type>::max())
+    {}
 
-	void insert(Type const &key);
-	bool lookup(Type const &key) const;
-	bool isEmpty() const;
+    void insert(Type const &key)
+    {
+        mSplayTree.insert(key);
+    }
+
+    bool lookup(Type const &key) const
+    {
+        return mSplayTree.contains(key);
+    }
+
+    bool isEmpty() const
+    {
+        return mSplayTree.isEmpty();
+    }
 
 protected:
-	SplayTree<Type, bool> mTree;
+    splay2::SplayTree<Type> mSplayTree;
 };
-}
 
+
+}

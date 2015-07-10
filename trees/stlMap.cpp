@@ -1,6 +1,6 @@
 #include "stlMap.h"
 
-using namespace Tree;
+using namespace tree;
 
 void StlMap::insert(Type const &key)
 {

@@ -2,9 +2,7 @@
 
 #include "iTree.h"
 
-#include <vector>
-
-namespace Tree
+namespace tree
 {
 //! @class AVLTree is a classic simple implementation of avl binary tree
 class AVLTree : public ITree

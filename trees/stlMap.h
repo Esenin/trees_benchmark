@@ -4,7 +4,7 @@
 
 #include "iTree.h"
 
-namespace Tree
+namespace tree
 {
 class StlMap : public ITree
 {

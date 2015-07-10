@@ -17,7 +17,7 @@
 #include "bTree.h"
 
 using namespace std;
-using namespace Tree;
+using namespace tree;
 
 namespace
 {
@@ -47,11 +47,12 @@ typename Timer::TimeValue Timer::mStartTime;
 } // anonymous namespace
 
 
-typedef std::vector<ITree *> Trees;
+typedef std::vector<tree::ITree *> Trees;
 
 
-void fastCheckTree(ITree *tree)
+void fastCheckTree(tree::ITree *tree, std::string const &name)
 {
+    cerr << "> Fast check for " << name << " started\n";
     std::set<Type> requests = {0, 1, 5, 6, 9, 13};
     for (Type const &r : requests)
         tree->insert(r);
@@ -64,18 +65,19 @@ void fastCheckTree(ITree *tree)
         assert(tree->lookup(i) == (requests.count(i) > 0));
     }
     delete tree;
+    cerr << "> Fast check done\n\n";
 }
 
 void fastCheckTree()
 {
     cerr << "Fast check started\n";
     Timer::start();
-    fastCheckTree(new StlMap());
-    fastCheckTree(new AVLTree());
-    fastCheckTree(new AdvancedAvlTree());
-    fastCheckTree(new VebLayoutTree());
-    fastCheckTree(new SplayTreeWrap());
-    fastCheckTree(new BTree());
+    fastCheckTree(new StlMap(), "stl");
+    fastCheckTree(new AVLTree(), "avl");
+    fastCheckTree(new AdvancedAvlTree(), "a-avl");
+    fastCheckTree(new VebLayoutTree(), "vebL");
+    fastCheckTree(new SplayTreeWrap(), "splay");
+    fastCheckTree(new BTree<>(), "btree40");
 
     cerr << "Fast check finished in "<< Timer::stop() <<" [ms]\n";
 }
@@ -83,12 +85,12 @@ void fastCheckTree()
 vector<ITree*> createAllTrees(size_t const hintSize = 0)
 {
     Trees trees;
-    trees.push_back(new Tree::StlMap());
-    trees.push_back(new Tree::AdvancedAvlTree(hintSize));
-    trees.push_back(new Tree::AVLTree());
-    trees.push_back(new Tree::VebLayoutTree(hintSize));
-    trees.push_back(new Tree::SplayTreeWrap());
-    trees.push_back(new Tree::BTree());
+    trees.push_back(new StlMap());
+    trees.push_back(new AdvancedAvlTree(hintSize));
+    trees.push_back(new AVLTree());
+    trees.push_back(new VebLayoutTree(hintSize));
+    trees.push_back(new SplayTreeWrap());
+    trees.push_back(new BTree<64>());
     return trees;
 }
 
@@ -123,12 +125,17 @@ void highlySparsedTest()
 
     parallelBuildTrees(trees);
 
+    for (auto const x : requests)
+        for (auto const t : trees)
+            if (t->lookup(x) == false)
+                throw runtime_error("Sparsed test failed");
+
     for (auto i = 0; i < checkSize; i++)
         for (auto const t : trees)
         {
             Type const val = rand() % numeric_limits<Type>::max() - 1;
             if (t->lookup(val) != (requests.find(val) != requests.end()))
-                throw logic_error("Sparse test failed");
+                throw logic_error("Sparsed test failed");
         }
 
     for (auto const t : trees)
@@ -149,11 +156,11 @@ void OneMTreePretests()
 
 
     std::set<int> requests;
-    for (int i = 0; i < testSize / 3; ++i)
+    for (int i = 0; i < testSize; ++i)
     {
         int value = rand() % testSize;
         requests.insert(value);
-        for (Tree::ITree *tree : trees)
+        for (tree::ITree *tree : trees)
             tree->insert(value);
     }
 
@@ -162,7 +169,7 @@ void OneMTreePretests()
     for (int i = testSize; i >= 0; --i)
     {
         bool answer = requests.find(i) != requests.end();
-        for (Tree::ITree *tree : trees)
+        for (tree::ITree *tree : trees)
         {
             if(tree->lookup(i) != answer)
             {
@@ -172,7 +179,7 @@ void OneMTreePretests()
         }
     }
 
-    for (Tree::ITree *tree : trees)
+    for (tree::ITree *tree : trees)
         delete tree;
     cerr << "1M-sized test finished successfully in "<< double(Timer::stop()) / 1000 <<" [s]\n";
 }
@@ -194,4 +201,6 @@ int main()
     }
 
     cout << "All tests passed!\n";
+
+    return 0;
 }

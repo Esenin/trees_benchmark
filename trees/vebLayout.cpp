@@ -1,6 +1,6 @@
 #include "vebLayout.h"
 
-using namespace Tree;
+using namespace tree;
 
 VebLayoutTree::VebLayoutTree(size_t hintSize)
 {

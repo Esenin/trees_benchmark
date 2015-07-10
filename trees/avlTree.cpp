@@ -1,6 +1,6 @@
 #include "avlTree.h"
 
-using namespace Tree;
+using namespace tree;
 
 struct AVLTree::Node
 {

@@ -5,7 +5,7 @@
 #include "iTree.h"
 #include "vebFunc/vanemdeboas.h"
 
-namespace Tree
+namespace tree
 {
 class VebLayoutTree : public ITree
 {

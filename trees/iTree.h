@@ -2,7 +2,7 @@
 
 #include <stdexcept>
 
-namespace Tree
+namespace tree
 {
 //! singleshot change of type. In research purpose templates are not necessary
 typedef long long Type;

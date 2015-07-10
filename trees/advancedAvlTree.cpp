@@ -3,7 +3,7 @@
 #include <algorithm>
 #include <thread>
 
-using namespace Tree;
+using namespace tree;
 
 AdvancedAvlTree::AdvancedAvlTree(size_t hintSize)
 {
