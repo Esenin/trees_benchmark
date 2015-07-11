@@ -28,7 +28,7 @@ protected:
     BTree& operator= (BTree const&) = delete;
 
 
-    static int const binSearchBound = 100;
+    static int const binSearchBound = 32;
     //! pageSize shows the number of element per one page-node
     constexpr static ushrt_t mPivot = Page_Size / 2;
 
