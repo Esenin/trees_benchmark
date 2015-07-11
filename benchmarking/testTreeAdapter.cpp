@@ -17,7 +17,7 @@ TestTreeAdapter::TestTreeAdapter(TreeType const type, double coverageRatio)
 {
 }
 
-TestTreeAdapter::TestTreeAdapter(size_t const &bTreeSize, double coverageRatio)
+TestTreeAdapter::TestTreeAdapter(int const &bTreeSize, double coverageRatio)
     : mCoverageRatio(coverageRatio)
     , mBTreePageSize(bTreeSize)
     , mTreeType(TreeType::b)
@@ -120,7 +120,7 @@ void TestTreeAdapter::createTree(TreeType type)
 void TestTreeAdapter::createRequests()
 {
     DEBUG2("");
-    mRequests.resize(mInputSize);
+    mRequests.resize(lookupCount);
     mDistributer.configureStd(0, mInputSize - 1);
 
     auto startTime = std::chrono::high_resolution_clock::now();

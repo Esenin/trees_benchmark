@@ -30,12 +30,13 @@ void makeBenchmarkSet(Benchmaker &benchmark, TestTreeAdapter *tree, std::string 
 void treesBenchmark(Benchmaker &benchmark)
 {
     int const repeatsNumber = 3;
-    double const coverageRatio = 20.0 / 100.0; //< 10% coverage for requests
+    double const coverageRatio = 20.0 / 100.0;
 
 
     benchmark.setMeasureType(MeasureType::cpuTime);
     benchmark.setLogginToFile(FileOutput::none);
     benchmark.setRoundsCount(repeatsNumber);
+    benchmark.setDivisionFactor(TestTreeAdapter::lookupCount);
 
 
     makeBenchmarkSet(benchmark, new TestTreeAdapter(tree::avlTree, coverageRatio), "Avl");

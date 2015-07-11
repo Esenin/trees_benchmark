@@ -30,10 +30,9 @@ public:
     void configureStd(Type const &min, Type const &max);
 
 
-    //! fills array with normally distributed values
+    //! fills vector with normally distributed values for vector.size()
     //! @arg percent is coverage ratio. Must be in [0..1] interval
     RequestsStats fill(std::vector<Type> &array, double percent);
-
 
 private:
     Type mMin;
@@ -72,7 +71,7 @@ template <typename Type>
 void NormalDistGenerator<Type>::initGenerators(double deviation)
 {
     mGenerators.clear();
-    mGenerators.reserve(mThreadsNum);
+    mGenerators.reserve(mThreadsNum + 1);
     for (auto i = 0u; i < mThreadsNum + 1; i++)
         mGenerators.push_back(NormalGenerator(mMean, deviation, i));
 }

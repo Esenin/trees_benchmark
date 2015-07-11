@@ -37,5 +37,7 @@ add_subdirectory(AnyBenchmark)
 # use careful: over x4 memory consumption
 #set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -fsanitize=address -fno-omit-frame-pointer -fPIE -pie")
 
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/bin")
+
 add_executable(trees_benchmark ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} AnyBenchmark ${CMAKE_THREAD_LIBS_INIT})

@@ -27,7 +27,7 @@ public:
     //! @arg type select what kind of tree will be used in testing
     //! @arg coverageRatio select requests' coverage percent relative to size param
     TestTreeAdapter(TreeType const type, double coverageRatio);
-    TestTreeAdapter(size_t const &bTreeSize, double coverageRatio);
+    TestTreeAdapter(int const &bTreeSize, double coverageRatio);
     virtual ~TestTreeAdapter();
 
     //! @arg param is size of test-input
@@ -36,11 +36,12 @@ public:
     virtual void run();
     virtual void clear();
 
+    static constexpr int lookupCount = 1000 * 1000 ;
 protected:
     tree::ITree *mTree = nullptr;
     size_t mInputSize = 0;
     double mCoverageRatio;
-    size_t mBTreePageSize;
+    int mBTreePageSize;
     TreeType mTreeType;
 
     std::vector<Type> mRequests;
