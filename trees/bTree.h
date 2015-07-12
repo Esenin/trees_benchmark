@@ -16,7 +16,7 @@ class BTree : public ITree
 {
 public:
     explicit BTree() : mRoot(new Page())  {}
-    //! @arg pageSize currently supported only 32, 40, 64, 96, 128, 256, 512, 1024
+    //! @arg pageSize currently supported only 16, 32, 40, 64, 96, 128, 256, 512, 1024
 
     virtual ~BTree()  { delete mRoot; }
 
@@ -35,18 +35,13 @@ protected:
     struct Page
     {
         int count = 0;
-        Type* keys = new Type[Page_Size];
+        Type keys[Page_Size];
         bool isLeaf = true;
-        Page** children = new Page* [Page_Size]{};
-
+        Page* children[Page_Size] {};
         ~Page()
         {
             for (auto i = 0; i < Page_Size; i++)
-            {
                 delete children[i];
-            }
-            delete[] keys;
-            delete[] children;
         }
     };
 
@@ -208,6 +203,7 @@ ITree* createBTree(ushrt_t pageSize)
 {
     static std::map<ushrt_t, std::function<ITree* (void)>> constructors
             {
+                    std::make_pair(16, []() { return new BTree<16>; }),
                     std::make_pair(32, []() { return new BTree<32>; }),
                     std::make_pair(40, []() { return new BTree<40>; }),
                     std::make_pair(64, []() { return new BTree<64>; }),
