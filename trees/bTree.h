@@ -201,17 +201,17 @@ void BTree<Page_Size>::splitChild(BTree::Page* host, int const &index)
 
 ITree* createBTree(ushrt_t pageSize)
 {
-    static std::map<ushrt_t, std::function<ITree* (void)>> constructors
+    static std::map<ushrt_t, std::function<ITree*(void)>> constructors
             {
-                    std::make_pair(16, []() { return new BTree<16>; }),
-                    std::make_pair(32, []() { return new BTree<32>; }),
-                    std::make_pair(40, []() { return new BTree<40>; }),
-                    std::make_pair(64, []() { return new BTree<64>; }),
-                    std::make_pair(96, []() { return new BTree<96>; }),
-                    std::make_pair(128, []() { return new BTree<128>; }),
-                    std::make_pair(256, []() { return new BTree<256>; }),
-                    std::make_pair(512, []() { return new BTree<512>; }),
-                    std::make_pair(1024, []() { return new BTree<1024>; }),
+                    {  16  , []() { return new BTree <16>; }}
+                    , {32  , []() { return new BTree <32>; }}
+                    , {40  , []() { return new BTree <40>; }}
+                    , {64  , []() { return new BTree <64>; }}
+                    , {96  , []() { return new BTree <96>; }}
+                    , {128 , []() { return new BTree <128>; }}
+                    , {256 , []() { return new BTree <256>; }}
+                    , {512 , []() { return new BTree <512>; }}
+                    , {1024, []() { return new BTree <1024>; }}
 
             };
     return (constructors.count(pageSize)) ? constructors[pageSize]() : nullptr;

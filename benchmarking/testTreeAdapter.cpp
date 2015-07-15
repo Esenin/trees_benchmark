@@ -1,6 +1,6 @@
 #include "testTreeAdapter.h"
 
-#include "../../AnyBenchmark/TestingFramework/include/constants.h"
+#include "../AnyBenchmark/TestingFramework/include/constants.h"
 #include "../trees/bTree.h"
 #include "../trees/advancedAvlTree.h"
 #include "../trees/avlTree.h"

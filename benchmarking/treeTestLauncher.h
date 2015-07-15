@@ -20,12 +20,12 @@ void makeBenchmarkSet(Benchmaker &benchmark, TestTreeAdapter *tree, std::string 
 	benchmark.makeBenchmark();
 }
 
-//! Complect of trees for performance test
-void treesBenchmark(Benchmaker &benchmark)
+//! Packet of trees for performance test
+void treesBenchmarkSummary(Benchmaker &benchmark)
 {
     int const repeatsNumber = 10;
     double const coverageRatio = 20.0 / 100.0;
-    int const startSize = 500 * 1000;
+    int const startSize = 500 * 1000;;
     int const maxSize = 40 * 1000 * 1000;
     int const step = 500 * 1000;
 
@@ -37,10 +37,9 @@ void treesBenchmark(Benchmaker &benchmark)
 
     benchmark.beginGroup();
 
+    makeBenchmarkSet(benchmark, new TestTreeAdapter(tree::vebLayoutTree, coverageRatio), "vebLayoutTree_1M");
 
-    makeBenchmarkSet(benchmark, new TestTreeAdapter(tree::avlTree, coverageRatio), "Avl_til40M");
-
-    makeBenchmarkSet(benchmark, new TestTreeAdapter(tree::vebLayoutTree, coverageRatio), "vebLayoutTree");
+    makeBenchmarkSet(benchmark, new TestTreeAdapter(tree::avlTree, coverageRatio), "Avl");
 
     makeBenchmarkSet(benchmark, new TestTreeAdapter(tree::splay, coverageRatio), "splay");
 
@@ -50,6 +49,42 @@ void treesBenchmark(Benchmaker &benchmark)
 
     makeBenchmarkSet(benchmark, new TestTreeAdapter(tree::stdRBTree, coverageRatio), "stlRBTree");
 
+    benchmark.endGroup();
+}
+
+void treesBenchmarkCoverage(Benchmaker &benchmark)
+{
+    int const repeatsNumber = 10;
+    int const testSize = 10 * 1000 * 1000;
+
+    benchmark.setMeasureType(MeasureType::cpuTime);
+    benchmark.setLogginToFile(FileOutput::csv);
+    benchmark.setRoundsCount(repeatsNumber);
+    benchmark.setDivisionFactor(TestTreeAdapter::lookupCount);
+    benchmark.setTestingParam(testSize);
+
+
+    benchmark.beginGroup();
+
+    double coverageRatio = 5.0 / 100.0;
+
+    while (coverageRatio <= .96)
+    {
+        std::string postfix = std::to_string(coverageRatio);
+        makeBenchmarkSet(benchmark, new TestTreeAdapter(tree::avlTree, coverageRatio), "Avl"+ postfix);
+
+        makeBenchmarkSet(benchmark, new TestTreeAdapter(tree::vebLayoutTree, coverageRatio), "vebLayoutTree" + postfix);
+
+        makeBenchmarkSet(benchmark, new TestTreeAdapter(tree::splay, coverageRatio), "splay" + postfix);
+
+        makeBenchmarkSet(benchmark, new TestTreeAdapter(64, coverageRatio), "btree64" + postfix);
+
+        makeBenchmarkSet(benchmark, new TestTreeAdapter(tree::advancedAvlTree, coverageRatio), "A-AvlTree" + postfix);
+
+        makeBenchmarkSet(benchmark, new TestTreeAdapter(tree::stdRBTree, coverageRatio), "stlRBTree" + postfix);
+
+        coverageRatio += 5.0 / 100.0;
+    }
     benchmark.endGroup();
 }
 

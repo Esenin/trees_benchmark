@@ -5,7 +5,8 @@ int main()
     benchmark::Benchmaker benchmark;
 //    bTreeBinSearchTuning(benchmark);
 //    bTreeParamTuning(benchmark);
-    treesBenchmark(benchmark);
+    treesBenchmarkSummary(benchmark);
+//    treesBenchmarkCoverage(benchmark);
 
     return 0;
 }
